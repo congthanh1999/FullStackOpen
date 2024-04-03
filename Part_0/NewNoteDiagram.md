@@ -35,4 +35,6 @@ sequenceDiagram
     deactivate server
 
     Note right of browser: The browser executes the callback function that renders the notes
+
+    browser->>user: display app with the updated note list
 ```
