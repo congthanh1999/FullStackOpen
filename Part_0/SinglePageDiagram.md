@@ -7,8 +7,10 @@
 
       user->>browser: enter URL: https://studies.cs.helsinki.fi/exampleapp/spa
 
-      browser->>+server: GET https://studies.cs.helsinki.fi/exampleapp/spa
-      server-->>-browser: single page app (includes html, css, js files)
+      browser->>+server: send HTTP GET request
+      server-->>-browser: SPA (includes html, css, js files)
+
+      browser->>user: display SPA
 
       note over user, browser: user interact with SPA
 
