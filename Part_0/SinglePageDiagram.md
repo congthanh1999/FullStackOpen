@@ -5,7 +5,7 @@
       participant browser
       participant server
 
-      user->>browser: fwefw
+      user->>browser: enter URL: https://studies.cs.helsinki.fi/exampleapp/spa
 
       browser->>+server: GET https://studies.cs.helsinki.fi/exampleapp/spa
       server-->>-browser: HTML document
