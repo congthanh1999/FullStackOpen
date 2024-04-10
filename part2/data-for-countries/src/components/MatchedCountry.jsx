@@ -3,6 +3,9 @@ import weatherService from "../services/weather";
 
 const MatchedCountry = ({ matchedCountry }) => {
   const [weather, setWeather] = useState(null);
+  const languages = Object.entries(matchedCountry.languages).map(
+    (entry) => entry[1]
+  );
 
   useEffect(() => {
     weatherService
@@ -12,10 +15,6 @@ const MatchedCountry = ({ matchedCountry }) => {
         console.log(initialWeather);
       });
   }, []);
-
-  const languages = Object.entries(matchedCountry.languages).map(
-    (entry) => entry[1]
-  );
 
   return (
     <div className="matched-country">
@@ -28,17 +27,16 @@ const MatchedCountry = ({ matchedCountry }) => {
           <li key={language}>{language}</li>
         ))}
       </ul>
-      <img src={matchedCountry.flags.png} height={200} />
+      <img src={matchedCountry.flags.png} height={150} />
       <h2>Weather in {matchedCountry.capital[0]}</h2>
-      <div>temperature {} Celcius</div>
-      {/* <img
-        src={
-          `https://openweathermap.org/img/wn/` +
-          weather.weather[0].icon +
-          `.png`
-        }
+      <div>temperature {weather && weather.main.temp} Celcius</div>
+      <img
+        src={`https://openweathermap.org/img/wn/${
+          weather && weather.weather[0].icon
+        }.png`}
         height={150}
-      /> */}
+      />
+      <div>win {weather && weather.wind.speed} m/s</div>
     </div>
   );
 };
