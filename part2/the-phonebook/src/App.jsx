@@ -59,7 +59,16 @@ const App = () => {
             person.name === newName ? updateAddedPerson : person
           )
         );
-        personService.update(updateAddedPerson, updateAddedPerson.id);
+
+        personService
+          .update(updateAddedPerson, updateAddedPerson.id)
+          // eslint-disable-next-line no-unused-vars
+          .catch((error) =>
+            displayNotification(
+              `Information of ${newName} has already been removed from server`,
+              `hsl(0, 100%, 40%)`
+            )
+          );
 
         displayNotification(
           `Updated ${addedPerson.name}'s information`,
