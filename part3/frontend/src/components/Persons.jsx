@@ -26,7 +26,7 @@ const Persons = ({ persons, searchInput, setPersons, displayNotification }) => {
           <div key={person.id}>
             {person.name} {person.number}{" "}
             <button onClick={(event) => handleDeletePerson(event, person)}>
-              DELETE
+              delete
             </button>
           </div>
         ))}
