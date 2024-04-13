@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
@@ -41,7 +40,7 @@ const App = () => {
   const handleAddPerson = (event) => {
     event.preventDefault();
 
-    const newPerson = { id: uuidv4(), name: newName, number: newNumber };
+    const newPerson = { name: newName, number: newNumber };
 
     const addedPerson = persons.find(
       (person) => person.name === newPerson.name

@@ -3,12 +3,13 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const Person = require("./models/person");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const app = express();
 
 morgan.token("body", function getBody(req) {
   if (req.method === "POST") {
-    return JSON.stringify(req.body);
+    return JSON.stringify({ ...req.body, _id: new ObjectId() });
   }
 });
 
