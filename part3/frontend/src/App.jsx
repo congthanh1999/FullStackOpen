@@ -61,15 +61,19 @@ const App = () => {
           .update(updateAddedPerson, updateAddedPerson.id)
           // eslint-disable-next-line no-unused-vars
           .then((updatedPerson) => {
-            setPersons(
-              persons.map((person) =>
-                person.name === newName ? updatedPerson : person
-              )
-            );
+            if (updatedPerson) {
+              setPersons(
+                persons.map((person) =>
+                  person.name === newName ? updatedPerson : person
+                )
+              );
+            }
+
             displayNotification(
               `Updated ${updatedPerson.name}'s information`,
               "hsl(120, 100%, 27%)"
             );
+
             setNewName("");
             setNewNumber("");
           })

@@ -11,3 +11,12 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3001/api/persons/6618d0088c217aaf91ab74b3
+
+###
+PUT http://localhost:3001/api/persons/661a8bf081e205594af0b0e6
+Content-Type: application/json
+
+{
+    "name":"Cong thanh",
+    "number":"123-115149"
+}
