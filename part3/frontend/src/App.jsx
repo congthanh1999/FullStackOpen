@@ -63,7 +63,7 @@ const App = () => {
           .then((updatedPerson) => {
             setPersons(
               persons.map((person) =>
-                person.name === newName ? updateAddedPerson : person
+                person.name === newName ? updatedPerson : person
               )
             );
             displayNotification(
