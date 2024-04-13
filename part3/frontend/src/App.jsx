@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
@@ -12,6 +12,7 @@ const App = () => {
   const [searchInput, setSearchInput] = useState("");
   const [message, setMessage] = useState("");
   const [messageColor, setMessageColor] = useState("");
+  const timerRef = useRef();
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -30,9 +31,12 @@ const App = () => {
   };
 
   const displayNotification = (message, color) => {
+    clearTimeout(timerRef.current);
+
     setMessage(message);
     setMessageColor(color);
-    setTimeout(() => {
+
+    timerRef.current = setTimeout(() => {
       setMessage(null);
     }, 5000);
   };
@@ -53,39 +57,46 @@ const App = () => {
           `${newName} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
-        setPersons(
-          persons.map((person) =>
-            person.name === newName ? updateAddedPerson : person
-          )
-        );
-
         personService
           .update(updateAddedPerson, updateAddedPerson.id)
           // eslint-disable-next-line no-unused-vars
-          .catch((error) =>
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.name === newName ? updateAddedPerson : person
+              )
+            );
             displayNotification(
-              `Information of ${newName} has already been removed from server`,
-              `hsl(0, 100%, 40%)`
-            )
-          );
-
-        displayNotification(
-          `Updated ${addedPerson.name}'s information`,
-          "hsl(120, 100%, 27%)"
-        );
+              `Updated ${updatedPerson.name}'s information`,
+              "hsl(120, 100%, 27%)"
+            );
+            setNewName("");
+            setNewNumber("");
+          })
+          // eslint-disable-next-line no-unused-vars
+          .catch((error) => {
+            const errorMessage = !newNumber
+              ? error.response.data.error
+              : `Information of ${newName} has already been removed from server`;
+            displayNotification(errorMessage, `hsl(0, 100%, 40%)`);
+          });
       }
     } else {
-      setPersons([...persons, newPerson]);
-      personService.create(newPerson);
-
-      displayNotification(
-        `Added ${newPerson.name} to phonebook`,
-        "hsl(120, 100%, 27%)"
-      );
+      personService
+        .create(newPerson)
+        .then((createdPerson) => {
+          setPersons([...persons, createdPerson]);
+          displayNotification(
+            `Added ${newPerson.name} to phonebook`,
+            "hsl(120, 100%, 27%)"
+          );
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) =>
+          displayNotification(error.response.data.error, `hsl(0, 100%, 40%)`)
+        );
     }
-
-    setNewName("");
-    setNewNumber("");
   };
 
   return (

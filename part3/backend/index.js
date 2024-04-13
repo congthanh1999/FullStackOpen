@@ -3,13 +3,12 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const Person = require("./models/person");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 const app = express();
 
 morgan.token("body", function getBody(req) {
   if (req.method === "POST") {
-    return JSON.stringify({ ...req.body, _id: new ObjectId() });
+    return JSON.stringify({ ...req.body });
   }
 });
 
@@ -45,25 +44,22 @@ app.delete("/api/persons/:id", (req, res) => {
   Person.findByIdAndDelete(id).then(() => res.status(204).end());
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
-
-  if (!body.name || !body.number) {
-    return res.status(400).json({ error: "The name or number is missing" });
-  }
-
-  // if (persons.find((person) => person.name === body.name)) {
-  //   return res.status(400).json({ error: "Name must be unique" });
-  // }
 
   const person = new Person({
     name: body.name,
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -75,7 +71,11 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(id, person)
+  Person.findByIdAndUpdate(id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => res.json(updatedPerson))
     .catch((error) => next(error));
 });
@@ -96,8 +96,12 @@ const errorHandler = (error, req, res, next) => {
   console.error(error.message);
 
   if (error.name === "CastError") {
-    res.status(400).send({ error: "Malformatted" });
+    return res.status(400).send({ error: "Malformatted" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
   }
+
+  next(error);
 };
 
 app.use(errorHandler);
