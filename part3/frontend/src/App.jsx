@@ -75,9 +75,10 @@ const App = () => {
           })
           // eslint-disable-next-line no-unused-vars
           .catch((error) => {
-            const errorMessage = !newNumber
-              ? error.response.data.error
-              : `Information of ${newName} has already been removed from server`;
+            const errorMessage =
+              newNumber && error.name === "TypeError"
+                ? `Information of ${newName} has already been removed from server`
+                : error.response.data.error;
             displayNotification(errorMessage, `hsl(0, 100%, 40%)`);
           });
       }
