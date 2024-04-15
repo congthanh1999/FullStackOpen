@@ -1,0 +1,11 @@
+.notification.active {
+  background: hsl(0, 0%, 71%);
+  /* border: 4px solid hsl(0, 100%, 50%); */
+  /* color: hsl(120, 100%, 27%); */
+  border-radius: 8px;
+  width: 100%;
+  min-height: 50px;
+  line-height: 50px;
+  height: fit-content;
+  padding: 0 8px;
+}
