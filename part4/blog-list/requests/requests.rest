@@ -8,5 +8,8 @@ Content-Type: application/json
     "title":"fwfw",
     "author":"fef",
     "url":"efwf",
-    "likes":"60"
+    "likes":25
 }
+
+###
+DELETE http://localhost:3003/api/blogs/661e8721aca6aad8968fdcf4

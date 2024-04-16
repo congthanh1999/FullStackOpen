@@ -6,7 +6,12 @@ blogsRouter.get("/", (req, res) => {
 });
 
 blogsRouter.post("/", (req, res) => {
-  const blog = new Blog(req.body);
+  const blog = new Blog({
+    title: "fwfw",
+    author: "fef",
+    url: "efwf",
+    likes: 25,
+  });
 
   blog.save().then((createdBlog) => res.status(201).json(createdBlog));
 });
