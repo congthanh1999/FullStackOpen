@@ -1,19 +1,47 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 
-blogsRouter.get("/", (req, res) => {
-  Blog.find({}).then((blogs) => res.json(blogs));
+blogsRouter.get("/", async (req, res) => {
+  const blogs = await Blog.find({});
+
+  res.json(blogs);
 });
 
-blogsRouter.post("/", (req, res) => {
-  const blog = new Blog({
-    title: "fwfw",
-    author: "fef",
-    url: "efwf",
-    likes: 25,
+blogsRouter.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const blog = await Blog.findById(id);
+
+  res.json(blog);
+  console.log(blog.toJSON());
+});
+
+blogsRouter.post("/", async (req, res) => {
+  let blog = new Blog(req.body);
+  const createdBlog = await blog.save();
+
+  if (createdBlog.title && createdBlog.url) {
+    res.status(201).json(createdBlog);
+  } else {
+    res.status(400).json({ error: "bad request" });
+  }
+});
+
+blogsRouter.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  await Blog.findByIdAndDelete(id);
+  res.status(204).end();
+});
+
+blogsRouter.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const updatedBlog = await Blog.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+    context: "query",
   });
 
-  blog.save().then((createdBlog) => res.status(201).json(createdBlog));
+  res.status(200).json(updatedBlog);
 });
 
 module.exports = blogsRouter;

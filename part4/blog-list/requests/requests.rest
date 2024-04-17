@@ -1,15 +1,29 @@
 GET http://localhost:3003/api/blogs
 
 ###
+GET http://localhost:3003/api/blogs/661f8107c635a0d8f1c5a556
+
+###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title":"fwfw",
-    "author":"fef",
-    "url":"efwf",
-    "likes":25
+   "title": "React patterns",
+   "author": "Michael Chan",
+   "url": "https://reactpatterns.com/",
+   "likes": 7
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/661e8721aca6aad8968fdcf4
+DELETE http://localhost:3003/api/blogs/5a422a851b54a676234d17f7
+
+###
+PUT http://localhost:3003/api/blogs/5a422b3a1b54a676234d17f9
+Content-Type: application/json
+
+{
+   "title":"React patterns",
+   "author":"Michael Chen",
+   "url":"https://reactpatterns.com/",
+   "likes":7
+}
