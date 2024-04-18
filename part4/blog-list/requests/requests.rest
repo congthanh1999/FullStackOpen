@@ -27,3 +27,16 @@ Content-Type: application/json
    "url":"https://reactpatterns.com/",
    "likes":7
 }
+
+###
+GET http://localhost:3003/api/users
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+   "username":"truongcong",
+   "name":"cong thanh",
+   "password":"12453"
+}
