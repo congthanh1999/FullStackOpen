@@ -2,9 +2,12 @@ const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 
 blogsRouter.get("/", async (req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("user", {
+    blogs: 0,
+    passwordHash: 0,
+  });
 
-  res.json(blogs);
+  res.status(200).json(blogs);
 });
 
 blogsRouter.get("/:id", async (req, res) => {
@@ -16,8 +19,17 @@ blogsRouter.get("/:id", async (req, res) => {
 });
 
 blogsRouter.post("/", async (req, res) => {
-  let blog = new Blog(req.body);
+  const user = req.user;
+
+  let blog = new Blog({
+    ...req.body,
+    user: user._id,
+  });
+
   const createdBlog = await blog.save();
+
+  user.blogs = user.blogs.concat(createdBlog._id);
+  await user.save();
 
   if (createdBlog.title && createdBlog.url) {
     res.status(201).json(createdBlog);
@@ -27,10 +39,15 @@ blogsRouter.post("/", async (req, res) => {
 });
 
 blogsRouter.delete("/:id", async (req, res) => {
+  const user = req.user;
   const id = req.params.id;
 
-  await Blog.findByIdAndDelete(id);
-  res.status(204).end();
+  const deletedBlog = await Blog.findByIdAndDelete(id);
+
+  user.blogs = user.blogs.filter((blog) => blog._id !== deletedBlog._id);
+  await user.save();
+
+  res.status(204).json(deletedBlog);
 });
 
 blogsRouter.put("/:id", async (req, res) => {

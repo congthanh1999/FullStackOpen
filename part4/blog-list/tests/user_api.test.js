@@ -27,18 +27,19 @@ describe.only("when there is some users added to DB", () => {
       .expect("content-type", /application\/json/);
   });
 
-  describe.only("where creating a user", () => {
-    test("adding a valid user", async () => {
+  describe.only("when creating a user", () => {
+    test.only("adding a invalid user", async () => {
       const password = "tr";
-      //   const passwordHash = await bcrypt.hash(password, user_helper.saltRounds);
 
-      const newUser = new User({
-        username: "co",
-        name: "Truong Cong Thanh",
+      const newUser = {
+        username: "tr25324",
+        name: "cong thanh",
         password: password,
-      });
+      };
 
       const res = await api.post("/api/users").send(newUser).expect(400);
+
+      assert.strictEqual(res.body.error, "invalid password");
     });
   });
 });

@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const list_helper = require("../utils/list_helper");
 
 const api = supertest(app);
@@ -12,6 +13,18 @@ describe.only("when there is initially some blogs saved", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(list_helper.blogs);
+
+    const newUser = {
+      username: "testuser",
+      password: "testpassword",
+    };
+
+    await User.deleteMany({});
+    await User.create(newUser);
+
+    const response = await api.post("/api/login").send(newUser);
+
+    token = response.body.token;
   });
 
   test("blogs are returned as json", async () => {
@@ -33,7 +46,7 @@ describe.only("when there is initially some blogs saved", () => {
     assert.strictEqual(_id, false);
   });
 
-  describe("When adding a new blog", () => {
+  describe.only("When adding a new blog", () => {
     test("blog is saved successfully", async () => {
       const initialBlogs = await Blog.find({});
 
@@ -91,6 +104,22 @@ describe.only("when there is initially some blogs saved", () => {
 
       assert.strictEqual(result, false);
     });
+
+    test.only("adding blog to database with authorization", async () => {
+      const newBlog = {
+        title: "fwefewfewfw",
+        author: "Truong Cong Thanh",
+        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+        likes: 5,
+      };
+
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
+        .send(newBlog)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
   });
 
   describe("when deleting a blog", () => {
@@ -107,8 +136,8 @@ describe.only("when there is initially some blogs saved", () => {
     });
   });
 
-  describe.only("when updating a blog", () => {
-    test.only("blog is updated successfully", async () => {
+  describe("when updating a blog", () => {
+    test("blog is updated successfully", async () => {
       const initialBlogs = await Blog.find({});
       const initialBlog = await Blog.findById(initialBlogs[0].toJSON().id);
       const initialBlogJSON = initialBlog.toJSON();
