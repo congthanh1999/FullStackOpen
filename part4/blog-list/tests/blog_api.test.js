@@ -6,23 +6,43 @@ const app = require("../app");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const list_helper = require("../utils/list_helper");
+const data_helper = require("../utils/data_helper");
+const jwt = require("jsonwebtoken");
+const config = require("../utils/config");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const api = supertest(app);
 
-describe.only("when there is initially some blogs saved", () => {
+let token;
+
+describe("when there is initially some blogs saved", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
-    await Blog.insertMany(list_helper.blogs);
+    await Blog.insertMany(data_helper.blogs);
+
+    const users = await Promise.all(
+      data_helper.users.map(async (user) => ({
+        ...user,
+        passwordHash: await data_helper.getPasswordHash(user.password),
+      }))
+    );
+
+    await User.deleteMany({});
+    await User.insertMany(users);
 
     const newUser = {
       username: "testuser",
+      name: "Cong Thanh",
       password: "testpassword",
     };
 
-    await User.deleteMany({});
-    await User.create(newUser);
+    const loginUser = {
+      username: data_helper.users[0].username,
+      password: "123455",
+    };
 
-    const response = await api.post("/api/login").send(newUser);
+    await api.post("/api/users").send(newUser);
+    const response = await api.post("/api/login").send(loginUser);
 
     token = response.body.token;
   });
@@ -30,6 +50,7 @@ describe.only("when there is initially some blogs saved", () => {
   test("blogs are returned as json", async () => {
     const res = await api
       .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .expect("content-type", /application\/json/);
 
@@ -37,7 +58,9 @@ describe.only("when there is initially some blogs saved", () => {
   });
 
   test("blogs id property is named id, not _id", async () => {
-    const res = await api.get("/api/blogs");
+    const res = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`);
 
     const id = res.body[0].id ? true : false;
     const _id = res.body[0]._id ? true : false;
@@ -46,19 +69,22 @@ describe.only("when there is initially some blogs saved", () => {
     assert.strictEqual(_id, false);
   });
 
-  describe.only("When adding a new blog", () => {
+  describe("When adding a new blog", () => {
     test("blog is saved successfully", async () => {
       const initialBlogs = await Blog.find({});
+      const decodedToken = jwt.verify(token, config.SECRET);
 
       const newBlog = {
         title: "fwfw",
         author: "cong thanh",
         url: "efwf",
         likes: 25,
+        user: new ObjectId(decodedToken.id),
       };
 
       const res = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -81,6 +107,7 @@ describe.only("when there is initially some blogs saved", () => {
 
       const res = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -96,6 +123,7 @@ describe.only("when there is initially some blogs saved", () => {
 
       const res = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
         .expect("Content-Type", /application\/json/);
@@ -105,7 +133,7 @@ describe.only("when there is initially some blogs saved", () => {
       assert.strictEqual(result, false);
     });
 
-    test.only("adding blog to database with authorization", async () => {
+    test("should response with 401 if the the user is unauthoized", async () => {
       const newBlog = {
         title: "fwefewfewfw",
         author: "Truong Cong Thanh",
@@ -115,9 +143,8 @@ describe.only("when there is initially some blogs saved", () => {
 
       await api
         .post("/api/blogs")
-        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
-        .expect(200)
+        .expect(401)
         .expect("Content-Type", /application\/json/);
     });
   });
@@ -128,6 +155,7 @@ describe.only("when there is initially some blogs saved", () => {
 
       const res = await api
         .delete(`/api/blogs/${initialBlogs[0].toJSON().id}`)
+        .set("Authorization", `Bearer ${token}`)
         .expect(204);
 
       const updatedBlogs = await Blog.find({});
@@ -139,7 +167,7 @@ describe.only("when there is initially some blogs saved", () => {
   describe("when updating a blog", () => {
     test("blog is updated successfully", async () => {
       const initialBlogs = await Blog.find({});
-      const initialBlog = await Blog.findById(initialBlogs[0].toJSON().id);
+      const initialBlog = await Blog.findById(initialBlogs[0]._id.toString());
       const initialBlogJSON = initialBlog.toJSON();
 
       const updateBlog = {
@@ -151,6 +179,7 @@ describe.only("when there is initially some blogs saved", () => {
 
       const res = await api
         .put(`/api/blogs/${initialBlogJSON.id}`)
+        .set("Authorization", `Bearer ${token}`)
         .send(updateBlog)
         .expect(200)
         .expect("Content-Type", /application\/json/);
