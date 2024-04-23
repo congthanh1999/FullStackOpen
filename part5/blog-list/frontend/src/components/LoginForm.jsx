@@ -10,6 +10,8 @@ const LoginForm = ({
   errorMessage,
   setErrorMessage,
   setUser,
+  timeoutRef,
+  handleNotification,
 }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,12 +20,17 @@ const LoginForm = ({
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      setUser(user);
 
+      setUser(user);
+      setErrorMessage(`${user.username} is logged in`);
       setUsername("");
       setPassword("");
+      handleNotification("logged in successfully", true);
     } catch (exception) {
+      clearTimeout(timeoutRef.current);
+
       setErrorMessage("wrong credentials");
+
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -37,7 +44,7 @@ const LoginForm = ({
   return (
     <div>
       <h1>Login to application</h1>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} success={false} />
       <form onSubmit={handleSubmit}>
         <label htmlFor="username">username: </label>
         <input
@@ -57,7 +64,7 @@ const LoginForm = ({
           onChange={(event) => handleOnChange(event, setPassword)}
         />
         <br />
-        <button>login</button>
+        <input type="submit" value="login" />
       </form>
     </div>
   );

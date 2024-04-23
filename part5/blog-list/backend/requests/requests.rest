@@ -1,5 +1,4 @@
 GET http://localhost:3003/api/blogs
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvbmd0aGFuaCIsImlkIjoiNjYyMWVlOWIyODYyZGEzMGNiNGM0M2NmIiwiaWF0IjoxNzEzNTA4MTM2fQ.wD4r2WsNwjy790Lhqj_GvtsIvuPkc7S3RZwZvcK2SV8
 
 ###
 GET http://localhost:3003/api/blogs/661f8107c635a0d8f1c5a556
@@ -32,14 +31,14 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3003/api/users
+GET http://localhost:3003/api/users/
 
 ###
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-   "username":"congthanh1999",
+   "username":"congthanh99",
    "name":"truong cong thanh",
    "password":"truongcongT99"
 }

@@ -27,10 +27,14 @@ const tokenExtractor = (req, res, next) => {
 };
 
 const userExtractor = async (req, res, next) => {
-  const decodedToken = jwt.verify(req.token, config.SECRET);
+  if (!req.token) {
+    req.user = null;
+  } else {
+    const decodedToken = jwt.verify(req.token, config.SECRET);
 
-  const user = await User.findById(decodedToken.id);
-  req.user = user;
+    const user = await User.findById(decodedToken.id);
+    req.user = user;
+  }
 
   next();
 };

@@ -1,13 +1,12 @@
-const Notification = ({ message, buttonOn }) => {
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser");
-  };
-
+const Notification = (props) => {
   return (
-    <p>
-      {message}{" "}
-      {buttonOn ? <button onClick={handleLogout}>logout</button> : null}
-    </p>
+    <h1
+      className={`notification ${props.message ? `active` : ``} ${
+        props.success ? `success` : `unsuccess`
+      }`}
+    >
+      {props.message}
+    </h1>
   );
 };
 
