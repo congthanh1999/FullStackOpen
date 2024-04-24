@@ -1,18 +1,17 @@
-import React, { useRef } from "react";
 import loginService from "../services/login";
 import Notification from "./Notification";
+import { useState } from "react";
 
 const LoginForm = ({
-  username,
-  setUsername,
-  password,
-  setPassword,
   errorMessage,
   setErrorMessage,
   setUser,
   timeoutRef,
   handleNotification,
 }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -37,10 +36,6 @@ const LoginForm = ({
     }
   };
 
-  const handleOnChange = (event, setState) => {
-    setState(event.target.value);
-  };
-
   return (
     <div>
       <h1>Login to application</h1>
@@ -52,7 +47,7 @@ const LoginForm = ({
           id="uername"
           name="username"
           value={username}
-          onChange={(event) => handleOnChange(event, setUsername)}
+          onChange={(event) => setUsername(event.target.value)}
         />
         <br />
         <label htmlFor="password">password: </label>
@@ -61,7 +56,7 @@ const LoginForm = ({
           id="password"
           name="password"
           value={password}
-          onChange={(event) => handleOnChange(event, setPassword)}
+          onChange={(event) => setPassword(event.target.value)}
         />
         <br />
         <input type="submit" value="login" />

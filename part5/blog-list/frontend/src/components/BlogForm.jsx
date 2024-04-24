@@ -1,42 +1,73 @@
+import { useRef, useState } from "react";
 import blogService from "../services/blogs";
+import Togglable from "./Togglable";
 
-const BlogForm = ({ handleNotification }) => {
+const BlogForm = ({ handleNotification, setBlogs }) => {
+  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
+  const blogFormRef = useRef();
+
   const handleCreate = async (event) => {
     event.preventDefault();
 
-    const newBlog = {
-      title: event.target.title.value,
-      author: event.target.author.value,
-      url: event.target.url.value,
-    };
-
     const createdBlog = await blogService.create(newBlog);
+
+    if (newBlog.title && newBlog.url) {
+      setBlogs((prev) => [...prev, createdBlog]);
+    } else {
+      setBlogs((prev) => [...prev]);
+    }
 
     handleNotification(
       `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
       true
     );
 
-    event.target.title.value = "";
-    event.target.author.value = "";
-    event.target.url.value = "";
+    setNewBlog({ title: "", author: "", url: "" });
+
+    blogFormRef.current.handleToggleVisible();
   };
 
   return (
     <div>
-      <h1>create new</h1>
-      <form onSubmit={handleCreate}>
-        <label htmlFor="title">title:</label>
-        <input type="text" id="title" name="title" />
-        <br />
-        <label htmlFor="title">author:</label>
-        <input type="text" id="author" name="author" />
-        <br />
-        <label htmlFor="title">url:</label>
-        <input type="text" id="url" name="url" />
-        <br />
-        <input type="submit" value="create" />
-      </form>
+      <Togglable buttonLabel={`new blog`} ref={blogFormRef}>
+        <h1>create new</h1>
+        <form onSubmit={handleCreate}>
+          <label htmlFor="title">title:</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={newBlog.title}
+            onChange={(event) => {
+              setNewBlog({ ...newBlog, title: event.target.value });
+            }}
+          />
+          <br />
+          <label htmlFor="title">author:</label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            value={newBlog.author}
+            onChange={(event) =>
+              setNewBlog({ ...newBlog, author: event.target.value })
+            }
+          />
+          <br />
+          <label htmlFor="title">url:</label>
+          <input
+            type="text"
+            id="url"
+            name="url"
+            value={newBlog.url}
+            onChange={(event) =>
+              setNewBlog({ ...newBlog, url: event.target.value })
+            }
+          />
+          <br />
+          <input type="submit" value="create" />
+        </form>
+      </Togglable>
     </div>
   );
 };

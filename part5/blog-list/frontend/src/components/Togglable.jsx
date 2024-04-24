@@ -1,17 +1,21 @@
-import { forwardRef, useState } from "react";
-const [visible, setVisible] = useState(false);
-
-const visibleOnStyle = {
-  display: visible ? "" : "none",
-};
-const visibleOffStyle = {
-  display: visible ? "none" : "",
-};
+import { forwardRef, useState, useImperativeHandle } from "react";
 
 const Togglable = forwardRef((props, refs) => {
+  const [visible, setVisible] = useState(false);
+  const visibleOnStyle = {
+    display: visible ? "" : "none",
+  };
+  const visibleOffStyle = {
+    display: visible ? "none" : "",
+  };
+
   const handleToggleVisible = () => {
     setVisible(!visible);
   };
+
+  useImperativeHandle(refs, () => {
+    return { handleToggleVisible };
+  });
 
   return (
     <div>
@@ -20,7 +24,7 @@ const Togglable = forwardRef((props, refs) => {
       </div>
       <div style={visibleOnStyle}>
         {props.children}
-        <button onClick={handleToggleVisible}>{props.buttonLabel}</button>
+        <button onClick={handleToggleVisible}>cancel</button>
       </div>
     </div>
   );

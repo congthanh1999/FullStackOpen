@@ -7,13 +7,22 @@ import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [notification, setNotification] = useState("");
   const [success, setSuccess] = useState(null);
   const timeoutRef = useRef();
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const blogs = await blogService.getAll();
+      blogs.sort((blog1, blog2) => blog2.likes - blog1.likes);
+
+      setBlogs(blogs);
+    };
+
+    fetchBlogs();
+  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -23,16 +32,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      const blogs = await blogService.getAll();
-
-      setBlogs(blogs);
-    };
-
-    fetchBlogs();
-  }, [blogs]);
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
@@ -55,10 +54,6 @@ const App = () => {
     <div>
       {!user ? (
         <LoginForm
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
           errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
           setUser={setUser}
@@ -76,8 +71,14 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
-          <BlogForm handleNotification={handleNotification} />
-          {blogs && blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+          <BlogForm
+            handleNotification={handleNotification}
+            setBlogs={setBlogs}
+          />
+          {blogs &&
+            blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} setBlogs={setBlogs} />
+            ))}
         </>
       )}
     </div>

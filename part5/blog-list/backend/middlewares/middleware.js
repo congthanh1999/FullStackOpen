@@ -21,6 +21,8 @@ const tokenExtractor = (req, res, next) => {
 
   if (authorization && authorization.startsWith("Bearer ")) {
     req.token = authorization.replace("Bearer ", "");
+  } else {
+    req.token = null;
   }
 
   next();
@@ -31,7 +33,6 @@ const userExtractor = async (req, res, next) => {
     req.user = null;
   } else {
     const decodedToken = jwt.verify(req.token, config.SECRET);
-
     const user = await User.findById(decodedToken.id);
     req.user = user;
   }
