@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import BlogForm from "./BlogForm.jsx";
+import BlogForm from "./BlogForm";
+import blogService from "../services/blogs.js";
 
 describe("testing BlogForm component", () => {
   let newBlog;
@@ -16,6 +17,7 @@ describe("testing BlogForm component", () => {
   test("BlogForm calls handleNotification with correct details", async () => {
     const mockHandleNotification = vi.fn();
     const mockSetBlogs = vi.fn();
+    vi.spyOn(blogService, "create").mockResolvedValue(newBlog);
     const user = userEvent.setup();
 
     const { container } = render(
@@ -35,10 +37,16 @@ describe("testing BlogForm component", () => {
     await user.type(url, newBlog.url);
     await user.click(submitButton);
 
-    expect(mockHandleNotification.mock.calls).toHaveLength(1);
-    // expect(mockHandleNotification.mock.calls[0][0].content).toBe(
-    //   `a new blog ${newBlog.title} by ${newBlog.author} added`
-    // );
-    // expect(mockHandleNotification.mock.calls[0][1].content).toBe(true);
+    expect(mockHandleNotification.mock.calls[0][0]).toBe(
+      `a new blog ${newBlog.title} by ${newBlog.author} added`
+    );
+    expect(mockHandleNotification.mock.calls[0][1]).toBe(true);
+
+    const setBlogsFirstCallFirstArg = mockSetBlogs.mock.calls[0][0];
+    expect(typeof setBlogsFirstCallFirstArg).toBe("function");
+
+    const initialState = [];
+    const newState = setBlogsFirstCallFirstArg(initialState);
+    expect(newState).toStrictEqual([...initialState, newBlog]);
   });
 });
