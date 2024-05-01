@@ -13,8 +13,6 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
 
     if (newBlog.title && newBlog.url) {
       setBlogs((prev) => [...prev, createdBlog]);
-    } else {
-      setBlogs((prev) => [...prev]);
     }
 
     handleNotification(
@@ -31,7 +29,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
     <div>
       <Togglable buttonLabel={`new blog`} ref={blogFormRef}>
         <h1>create new</h1>
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleCreate} className={`blog-form-input`}>
           <label htmlFor="title">title:</label>
           <input
             type="text"
@@ -43,7 +41,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
             }}
           />
           <br />
-          <label htmlFor="title">author:</label>
+          <label htmlFor="author">author:</label>
           <input
             type="text"
             id="author"
@@ -54,7 +52,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
             }
           />
           <br />
-          <label htmlFor="title">url:</label>
+          <label htmlFor="url">url:</label>
           <input
             type="text"
             id="url"

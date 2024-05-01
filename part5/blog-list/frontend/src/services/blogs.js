@@ -27,7 +27,10 @@ const create = async (object) => {
 
 const update = async (id, object) => {
   const config = {
-    headers: { Authorization: token },
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
   };
 
   const res = await axios.put(`${baseUrl}/${id}`, object, config);
