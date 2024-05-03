@@ -32,6 +32,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
         <form onSubmit={handleCreate} className={`blog-form-input`}>
           <label htmlFor="title">title:</label>
           <input
+            data-testid="title"
             type="text"
             id="title"
             name="title"
@@ -43,6 +44,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
           <br />
           <label htmlFor="author">author:</label>
           <input
+            data-testid="author"
             type="text"
             id="author"
             name="author"
@@ -54,6 +56,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
           <br />
           <label htmlFor="url">url:</label>
           <input
+            data-testid="url"
             type="text"
             id="url"
             name="url"
@@ -63,7 +66,7 @@ const BlogForm = ({ handleNotification, setBlogs }) => {
             }
           />
           <br />
-          <input type="submit" value="create" />
+          <input data-testid="create-button" type="submit" value="create" />
         </form>
       </Togglable>
     </div>

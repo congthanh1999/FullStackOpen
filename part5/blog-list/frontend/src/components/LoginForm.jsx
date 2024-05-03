@@ -1,6 +1,7 @@
 import loginService from "../services/login";
 import Notification from "./Notification";
 import { useState } from "react";
+import blogService from "../services/blogs";
 
 const LoginForm = ({
   errorMessage,
@@ -21,6 +22,7 @@ const LoginForm = ({
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
 
       setUser(user);
+      blogService.setToken(user.token);
       setErrorMessage(`${user.username} is logged in`);
       setUsername("");
       setPassword("");
@@ -40,9 +42,10 @@ const LoginForm = ({
     <div>
       <h1>Login to application</h1>
       <Notification message={errorMessage} success={false} />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="login-form">
         <label htmlFor="username">username: </label>
         <input
+          data-testid="username"
           type="text"
           id="uername"
           name="username"
@@ -52,6 +55,7 @@ const LoginForm = ({
         <br />
         <label htmlFor="password">password: </label>
         <input
+          data-testid="password"
           type="password"
           id="password"
           name="password"
@@ -59,7 +63,7 @@ const LoginForm = ({
           onChange={(event) => setPassword(event.target.value)}
         />
         <br />
-        <input type="submit" value="login" />
+        <input type="submit" value="login" data-testid="submit-button" />
       </form>
     </div>
   );
