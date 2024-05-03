@@ -16,28 +16,54 @@ const errorHandler = (error, req, res, next) => {
   next(error);
 };
 
-const tokenExtractor = (req, res, next) => {
+// const tokenExtractor = (req, res, next) => {
+//   const authorization = req.get("authorization");
+
+//   if (authorization && authorization.startsWith("Bearer ")) {
+//     req.token = authorization.replace("Bearer ", "");
+//   }
+
+//   next();
+// };
+
+// const userExtractor = async (req, res, next) => {
+//   const decodedToken = jwt.verify(req.token, config.SECRET);
+
+//   const user = await User.findById(decodedToken.id);
+//   req.user = user;
+
+//   next();
+// };
+
+const getTokenFrom = (req) => {
   const authorization = req.get("authorization");
-
   if (authorization && authorization.startsWith("Bearer ")) {
-    req.token = authorization.replace("Bearer ", "");
-  } else {
-    req.token = null;
+    return authorization.replace("Bearer ", "");
   }
+  return null;
+};
+
+const userExtractor = async (req, response, next) => {
+  const token = getTokenFrom(req);
+
+  if (!token) {
+    return response.status(401).json({ error: "token missing" });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findById(decodedToken.id);
+
+  if (!user) {
+    return response.status(401).json({ error: "user not found" });
+  }
+
+  req.user = user;
 
   next();
 };
 
-const userExtractor = async (req, res, next) => {
-  if (!req.token) {
-    req.user = null;
-  } else {
-    const decodedToken = jwt.verify(req.token, config.SECRET);
-    const user = await User.findById(decodedToken.id);
-    req.user = user;
-  }
-
-  next();
-};
-
-module.exports = { errorHandler, tokenExtractor, userExtractor };
+module.exports = { errorHandler, userExtractor };

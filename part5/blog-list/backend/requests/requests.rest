@@ -1,6 +1,7 @@
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvbmd0aGFuaDE5OTkiLCJpZCI6IjY2MjVmNTk0MTNlOGM3ZWI1ZDE3NmUyOSIsImlhdCI6MTcxMzkzNzYwNH0.Egx2XrQvIti5HvntYcrDSNIVQA8iZK-wL-2enM2YSgQ
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvbmd0aGFuaDE5OTkiLCJpZCI6IjY2MjVmNTk0MTNlOGM3ZWI1ZDE3NmUyOSIsImlhdCI6MTcxNDcyNDM5M30.6JqDNxniKSWdKVahWz0pifza2ZJ494CtZJ2WNOrSr-Q
 
 GET http://localhost:3003/api/blogs
+Authorization: Bearer {{token}}
 
 ###
 GET http://localhost:3003/api/blogs/661f8107c635a0d8f1c5a556
@@ -8,18 +9,18 @@ GET http://localhost:3003/api/blogs/661f8107c635a0d8f1c5a556
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvbmd0aGFuaCIsImlkIjoiNjYyMWVlOWIyODYyZGEzMGNiNGM0M2NmIiwiaWF0IjoxNzEzNTA4MTM2fQ.wD4r2WsNwjy790Lhqj_GvtsIvuPkc7S3RZwZvcK2SV8
 
 {
-    "title": "",
+    "title": "fwefewfewfw",
     "author": "Truong Cong Thanh",
     "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
     "likes": 5
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/6628a6ed3e23c763e3baa28a
-Authorization: Bearer {{token}}
+DELETE http://localhost:3003/api/blogs/66220f34fd4cd9254c8f84c2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvbmd0aGFuaCIsImlkIjoiNjYyMWVlOWIyODYyZGEzMGNiNGM0M2NmIiwiaWF0IjoxNzEzNTA4MTM2fQ.wD4r2WsNwjy790Lhqj_GvtsIvuPkc7S3RZwZvcK2SV8
 
 ###
 PUT http://localhost:3003/api/blogs/5a422b3a1b54a676234d17f9
@@ -33,16 +34,16 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3003/api/users/
+GET http://localhost:3003/api/users
 
 ###
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-   "username":"congthanh99",
+   "username":"coofkwofjwef",
    "name":"truong cong thanh",
-   "password":"truongcongT99"
+   "password":"truongcongthanh"
 }
 
 ###

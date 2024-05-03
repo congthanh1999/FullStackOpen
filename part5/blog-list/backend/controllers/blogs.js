@@ -26,16 +26,16 @@ blogsRouter.post("/", async (req, res) => {
     user: user._id,
   });
 
-  if (!(blog.title && blog.url)) {
-    return res.status(400).json({ error: "title or url is missing" });
-  }
-
   const createdBlog = await blog.save();
 
   user.blogs = user.blogs.concat(createdBlog._id);
   await user.save();
 
-  res.status(201).json(createdBlog);
+  if (createdBlog.title && createdBlog.url) {
+    res.status(201).json(createdBlog);
+  } else {
+    res.status(400).json({ error: "bad request" });
+  }
 });
 
 blogsRouter.delete("/:id", async (req, res) => {
@@ -44,13 +44,10 @@ blogsRouter.delete("/:id", async (req, res) => {
 
   const deletedBlog = await Blog.findByIdAndDelete(id);
 
-  user.blogs = user.blogs.filter(
-    (blog) => blog._id.toString() !== deletedBlog._id.toString()
-  );
-
+  user.blogs = user.blogs.filter((blog) => blog._id !== deletedBlog._id);
   await user.save();
 
-  res.status(200).json(deletedBlog);
+  res.status(204).json(deletedBlog);
 });
 
 blogsRouter.put("/:id", async (req, res) => {
@@ -59,8 +56,6 @@ blogsRouter.put("/:id", async (req, res) => {
     new: true,
     runValidators: true,
     context: "query",
-  }).populate("user", {
-    blogs: 0,
   });
 
   res.status(200).json(updatedBlog);
