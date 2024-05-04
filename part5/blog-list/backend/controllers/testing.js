@@ -9,6 +9,4 @@ router.post("/reset", async (req, res) => {
   res.status(204).end();
 });
 
-router.post("/initialize", async (req, res) => {});
-
 module.exports = router;

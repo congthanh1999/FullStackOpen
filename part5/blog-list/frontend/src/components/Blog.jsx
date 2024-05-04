@@ -55,8 +55,14 @@ const Blog = ({ blog, setBlogs }) => {
       <div className="blog-details" style={display}>
         <div>{blog.url}</div>
         <div className="likes">
-          likes {blog.likes}{" "}
-          <button className="like-button" onClick={handleLikeBlog}>
+          <div data-testid="like-text" style={{ display: "inline" }}>
+            likes {blog.likes}{" "}
+          </div>
+          <button
+            data-testid="like-button"
+            className="like-button"
+            onClick={handleLikeBlog}
+          >
             like
           </button>
         </div>

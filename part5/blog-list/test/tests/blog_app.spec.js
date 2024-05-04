@@ -54,6 +54,18 @@ describe("Blog app", () => {
       await usernameLocator.fill("congthanh1999");
       await passwordLocator.fill("truongcongT99");
       await submitLocator.click();
+
+      const initialBlog = {
+        title: "test",
+        author: "test",
+        url: "http://testing-url.com",
+      };
+
+      await page.getByText("new blog").click();
+      await page.getByTestId("title").fill(`${initialBlog.title}`);
+      await page.getByTestId("author").fill(`${initialBlog.author}`);
+      await page.getByTestId("url").fill(`${initialBlog.url}`);
+      await page.getByTestId("create-button").click();
     });
 
     test("a new blog can be created", async ({ page }) => {
@@ -74,6 +86,15 @@ describe("Blog app", () => {
       ).toBeVisible();
     });
 
-    test("a blog can be edited", async () => {});
+    test("a blog can be edited", async ({ page }) => {
+      await page.getByText("view").click();
+      await page.getByTestId("like-button").click();
+
+      const likeTextElement = await page.getByTestId("like-text");
+      const likeText = await likeTextElement.innerText();
+      const likeCount = Number(likeText.split(" ")[1]);
+
+      expect(likeCount).toBe(1);
+    });
   });
 });
