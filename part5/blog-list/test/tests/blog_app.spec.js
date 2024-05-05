@@ -92,9 +92,8 @@ describe("Blog app", () => {
 
       const likeTextElement = await page.getByTestId("like-text");
       const likeText = await likeTextElement.innerText();
-      const likeCount = Number(likeText.split(" ")[1]);
 
-      expect(likeCount).toBe(1);
+      await expect(likeText).toBe(`likes 1`);
     });
   });
 });

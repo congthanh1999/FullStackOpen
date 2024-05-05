@@ -3,6 +3,7 @@ import blogService from "../services/blogs";
 
 const Blog = ({ blog, setBlogs }) => {
   const [visible, setVisible] = useState(false);
+  const [likes, setLikes] = useState(blog.likes);
 
   const blogStyle = {
     paddingTop: 10,
@@ -21,6 +22,8 @@ const Blog = ({ blog, setBlogs }) => {
   };
 
   const handleLikeBlog = async () => {
+    setLikes((prev) => prev + 1);
+
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
@@ -30,7 +33,9 @@ const Blog = ({ blog, setBlogs }) => {
     const res = await blogService.update(blog.id, updatedBlog);
 
     setBlogs((prevBlogs) =>
-      prevBlogs.map((prevBlog) => (prevBlog.id === blog.id ? res : prevBlog))
+      prevBlogs
+        .map((prevBlog) => (prevBlog.id === blog.id ? res : prevBlog))
+        .sort((blog1, blog2) => blog2.likes - blog1.likes)
     );
   };
 
@@ -56,8 +61,9 @@ const Blog = ({ blog, setBlogs }) => {
         <div>{blog.url}</div>
         <div className="likes">
           <div data-testid="like-text" style={{ display: "inline" }}>
-            likes {blog.likes}{" "}
+            likes {likes}
           </div>
+          &nbsp;
           <button
             data-testid="like-button"
             className="like-button"

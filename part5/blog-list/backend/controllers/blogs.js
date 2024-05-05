@@ -42,12 +42,19 @@ blogsRouter.delete("/:id", async (req, res) => {
   const user = req.user;
   const id = req.params.id;
 
+  const requestedBlog = await Blog.findById(id).populate("user");
+  if (user.id !== requestedBlog.user.id) {
+    res.status(401).json({ error: "this blog does not belong to you" });
+  }
+
   const deletedBlog = await Blog.findByIdAndDelete(id);
 
-  user.blogs = user.blogs.filter((blog) => blog._id !== deletedBlog._id);
+  user.blogs = user.blogs.filter(
+    (blog) => blog._id.toString() !== deletedBlog._id.toString()
+  );
   await user.save();
 
-  res.status(204).json(deletedBlog);
+  res.status(201).json(deletedBlog);
 });
 
 blogsRouter.put("/:id", async (req, res) => {
@@ -56,6 +63,9 @@ blogsRouter.put("/:id", async (req, res) => {
     new: true,
     runValidators: true,
     context: "query",
+  }).populate("user", {
+    blogs: 0,
+    passwordHash: 0,
   });
 
   res.status(200).json(updatedBlog);
