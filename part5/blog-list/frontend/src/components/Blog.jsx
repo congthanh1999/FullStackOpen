@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs, handleNotification }) => {
+const Blog = ({ blog, setBlogs, handleNotification, user }) => {
   const [visible, setVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -13,6 +13,10 @@ const Blog = ({ blog, setBlogs, handleNotification }) => {
     marginBottom: 5,
   };
 
+  const removeButtonStyle = {
+    display: blog.user.username === user.username ? "" : "none",
+  };
+
   const display = {
     display: visible ? "" : "none",
   };
@@ -22,6 +26,8 @@ const Blog = ({ blog, setBlogs, handleNotification }) => {
   };
 
   const handleLikeBlog = async () => {
+    console.log(user._id);
+    console.log(blog.user.id);
     setLikes((prev) => prev + 1);
 
     const updatedBlog = {
@@ -86,7 +92,11 @@ const Blog = ({ blog, setBlogs, handleNotification }) => {
           </button>
         </div>
         <div className="username">{blog.user.username}</div>
-        <button onClick={handleDeleteBlog} className="remove-button">
+        <button
+          onClick={handleDeleteBlog}
+          className="remove-button"
+          style={removeButtonStyle}
+        >
           remove
         </button>
       </div>

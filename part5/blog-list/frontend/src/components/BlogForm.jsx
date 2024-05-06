@@ -3,7 +3,12 @@ import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 
 const BlogForm = ({ handleNotification, setBlogs }) => {
-  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
+  const [newBlog, setNewBlog] = useState({
+    title: "",
+    author: "",
+    url: "",
+    user: "",
+  });
   const blogFormRef = useRef();
 
   const handleCreate = async (event) => {

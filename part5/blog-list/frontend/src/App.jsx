@@ -82,6 +82,7 @@ const App = () => {
                 blog={blog}
                 setBlogs={setBlogs}
                 handleNotification={handleNotification}
+                user={user}
               />
             ))}
         </>
