@@ -2,12 +2,11 @@ import { useRef, useState } from "react";
 import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 
-const BlogForm = ({ handleNotification, setBlogs }) => {
+const BlogForm = ({ handleNotification, setBlogs, user }) => {
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
     url: "",
-    user: "",
   });
   const blogFormRef = useRef();
 

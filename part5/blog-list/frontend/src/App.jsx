@@ -74,6 +74,7 @@ const App = () => {
           <BlogForm
             handleNotification={handleNotification}
             setBlogs={setBlogs}
+            user={user}
           />
           {blogs &&
             blogs.map((blog) => (

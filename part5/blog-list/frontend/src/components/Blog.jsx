@@ -26,8 +26,6 @@ const Blog = ({ blog, setBlogs, handleNotification, user }) => {
   };
 
   const handleLikeBlog = async () => {
-    console.log(user._id);
-    console.log(blog.user.id);
     setLikes((prev) => prev + 1);
 
     const updatedBlog = {
