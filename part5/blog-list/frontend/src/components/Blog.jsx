@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, setBlogs, handleNotification }) => {
   const [visible, setVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -40,12 +40,25 @@ const Blog = ({ blog, setBlogs }) => {
   };
 
   const handleDeleteBlog = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      const deletedBlog = await blogService.remove(blog.id);
+    const confirmation = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}`
+    );
 
-      setBlogs((prevBlogs) =>
-        prevBlogs.filter((prevBlog) => prevBlog.id !== deletedBlog.id)
-      );
+    if (confirmation) {
+      try {
+        const deletedBlog = await blogService.remove(blog.id);
+
+        setBlogs((prevBlogs) =>
+          prevBlogs.filter((prevBlog) => prevBlog.id !== deletedBlog.id)
+        );
+
+        handleNotification(
+          `deleted ${deletedBlog.title} by ${deletedBlog.author}`,
+          true
+        );
+      } catch (error) {
+        handleNotification(error.response.data.error, false);
+      }
     }
   };
 
@@ -73,7 +86,9 @@ const Blog = ({ blog, setBlogs }) => {
           </button>
         </div>
         <div className="username">{blog.user.username}</div>
-        <button onClick={handleDeleteBlog}>remove</button>
+        <button onClick={handleDeleteBlog} className="remove-button">
+          remove
+        </button>
       </div>
     </div>
   );

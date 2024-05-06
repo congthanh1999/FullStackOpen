@@ -95,5 +95,23 @@ describe("Blog app", () => {
 
       await expect(likeText).toBe(`likes 1`);
     });
+
+    test("a blog can be deleted by user who created it", async ({ page }) => {
+      await page.locator(".view-button").click();
+      await page.locator(".remove-button").click();
+
+      page.on("dialog", async (dialog) => {
+        await expect(dialog.type()).toContain("alert");
+        await expect(dialog.message()).toContain("Remove blog test by test");
+        await dialog.accept();
+      });
+
+      const notification = await page.locator(`.notification`).innerText();
+      // await page.waitForFunction(
+      //   `document.querySelector('.notification').innerText === 'deleted test by test'`
+      // );
+
+      await expect(notification).toBe(`deleted test by test`);
+    });
   });
 });

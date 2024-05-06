@@ -44,8 +44,9 @@ const App = () => {
     setNotification(message);
     setSuccess(success);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setNotification(null);
+      setSuccess(null);
     }, 5000);
   };
 
@@ -76,7 +77,12 @@ const App = () => {
           />
           {blogs &&
             blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} setBlogs={setBlogs} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                setBlogs={setBlogs}
+                handleNotification={handleNotification}
+              />
             ))}
         </>
       )}
