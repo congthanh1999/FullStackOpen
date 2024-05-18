@@ -45,6 +45,7 @@ const LoginForm = ({
       <form onSubmit={handleSubmit} data-testid="login-form">
         <label htmlFor="username">username: </label>
         <input
+          className="username"
           data-testid="username"
           type="text"
           id="uername"
@@ -55,6 +56,7 @@ const LoginForm = ({
         <br />
         <label htmlFor="password">password: </label>
         <input
+          className="password"
           data-testid="password"
           type="password"
           id="password"
@@ -63,7 +65,12 @@ const LoginForm = ({
           onChange={(event) => setPassword(event.target.value)}
         />
         <br />
-        <input type="submit" value="login" data-testid="submit-button" />
+        <input
+          className="login-button"
+          type="submit"
+          value="login"
+          data-testid="submit-button"
+        />
       </form>
     </div>
   );

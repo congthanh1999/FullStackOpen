@@ -27,12 +27,16 @@ blogsRouter.post("/", async (req, res) => {
   });
 
   const createdBlog = await blog.save();
+  const populatedBlog = await Blog.findById(createdBlog.id).populate("user", {
+    blogs: 0,
+    passwordHash: 0,
+  });
 
   user.blogs = user.blogs.concat(createdBlog._id);
   await user.save();
 
   if (createdBlog.title && createdBlog.url) {
-    res.status(201).json(createdBlog);
+    res.status(201).json(populatedBlog);
   } else {
     res.status(400).json({ error: "bad request" });
   }

@@ -11,6 +11,14 @@ describe("Blog app", () => {
       },
     });
 
+    await request.post("/api/users", {
+      data: {
+        username: "congthanh99",
+        name: "cong thanh",
+        password: "truongcongT99",
+      },
+    });
+
     await page.goto("/");
   });
 
@@ -75,7 +83,7 @@ describe("Blog app", () => {
         url: "http://testing-url.com",
       };
 
-      await page.getByText("new blog").click();
+      await page.locator("button").and(page.getByText("new blog")).click();
       await page.getByTestId("title").fill(`${newBlog.title}`);
       await page.getByTestId("author").fill(`${newBlog.author}`);
       await page.getByTestId("url").fill(`${newBlog.url}`);
@@ -87,8 +95,11 @@ describe("Blog app", () => {
     });
 
     test("a blog can be edited", async ({ page }) => {
-      await page.getByText("view").click();
-      await page.getByTestId("like-button").click();
+      const viewButton = await page.getByText("view");
+      const likeButton = await page.locator(".like-button");
+
+      await viewButton.click();
+      await likeButton.click();
 
       const likeTextElement = await page.getByTestId("like-text");
       const likeText = await likeTextElement.innerText();
@@ -97,21 +108,66 @@ describe("Blog app", () => {
     });
 
     test("a blog can be deleted by user who created it", async ({ page }) => {
-      await page.locator(".view-button").click();
-      await page.locator(".remove-button").click();
-
       page.on("dialog", async (dialog) => {
-        await expect(dialog.type()).toContain("alert");
-        await expect(dialog.message()).toContain("Remove blog test by test");
+        await expect(dialog.type()).toContain("confirm");
+        await expect(dialog.message()).toBe("Remove blog test by test");
         await dialog.accept();
       });
 
-      const notification = await page.locator(`.notification`).innerText();
-      // await page.waitForFunction(
-      //   `document.querySelector('.notification').innerText === 'deleted test by test'`
-      // );
+      await page.locator(".view-button").click();
+      await page.locator(".remove-button").click();
 
+      await page.waitForFunction(
+        `document.querySelector('.notification').innerText === 'deleted test by test'`
+      );
+      const notification = await page.locator(`.notification`).innerText();
       await expect(notification).toBe(`deleted test by test`);
+    });
+
+    test("only user who created the blog can see its remove button", async ({
+      page,
+    }) => {
+      await page.locator(".view-button").click();
+      await expect(page.locator(".remove-button")).toBeVisible();
+
+      await page.locator(".logout-button").click();
+      await page.locator(".username").fill("congthanh99");
+      await page.locator(".password").fill("truongcongT99");
+      await page.locator(".login-button").click();
+
+      await page.locator(".view-button").click();
+      await expect(page.locator(".remove-button")).not.toBeVisible();
+    });
+
+    test("blogs are arranged in the descending order of blog's likes", async ({
+      page,
+    }) => {
+      await page.getByText("new blog").click();
+      await page.getByTestId("title").fill(`test title`);
+      await page.getByTestId("author").fill(`test author`);
+      await page.getByTestId("url").fill(`test url`);
+      await page.getByTestId("create-button").click();
+
+      await page.waitForFunction(
+        "document.querySelectorAll('.blog').length===2"
+      );
+
+      const viewButtons = await page.locator(".view-button").all();
+      await viewButtons[1].click();
+
+      const likeButtons = await page.locator(".like-button").all();
+      await likeButtons[1].click();
+
+      await page.waitForFunction(() => {
+        const firstBlogText = document.querySelector(".blog-summary").innerText;
+        console.log(firstBlogText);
+
+        return firstBlogText.includes("test title test author");
+      });
+
+      const blogs = await page.locator(".blog-summary").all();
+      const firstBlogText = await blogs[0].innerText();
+      await expect(firstBlogText).toContain("test title test author");
     });
   });
 });

@@ -36,6 +36,7 @@ const BlogForm = ({ handleNotification, setBlogs, user }) => {
         <form onSubmit={handleCreate} className={`blog-form-input`}>
           <label htmlFor="title">title:</label>
           <input
+            className="title"
             data-testid="title"
             type="text"
             id="title"
@@ -48,6 +49,7 @@ const BlogForm = ({ handleNotification, setBlogs, user }) => {
           <br />
           <label htmlFor="author">author:</label>
           <input
+            className="author"
             data-testid="author"
             type="text"
             id="author"
@@ -60,6 +62,7 @@ const BlogForm = ({ handleNotification, setBlogs, user }) => {
           <br />
           <label htmlFor="url">url:</label>
           <input
+            className="url"
             data-testid="url"
             type="text"
             id="url"

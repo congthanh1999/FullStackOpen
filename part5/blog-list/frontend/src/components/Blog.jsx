@@ -77,7 +77,11 @@ const Blog = ({ blog, setBlogs, handleNotification, user }) => {
       <div className="blog-details" style={display}>
         <div>{blog.url}</div>
         <div className="likes">
-          <div data-testid="like-text" style={{ display: "inline" }}>
+          <div
+            className="like-text"
+            data-testid="like-text"
+            style={{ display: "inline" }}
+          >
             likes {likes}
           </div>
           &nbsp;
