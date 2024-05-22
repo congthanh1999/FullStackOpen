@@ -18,24 +18,15 @@ const App = () => {
 
   const handleVote = (anecdote) => {
     newAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
-    dispatch({ type: "VOTE", payload: anecdote });
+    dispatch({ type: "VOTE", payload: anecdote.content });
     console.log("vote");
   };
-
-  // const anecdotes = [
-  //   {
-  //     content: "If it hurts, do it more often",
-  //     id: "47145",
-  //     votes: 0,
-  //   },
-  // ];
 
   const result = useQuery({
     queryKey: ["anecdotes"],
     queryFn: getAnecdotes,
     retry: false,
   });
-  // console.log(JSON.parse(JSON.stringify(result)));
 
   if (result.isLoading) {
     return <div>Loading data...</div>;
