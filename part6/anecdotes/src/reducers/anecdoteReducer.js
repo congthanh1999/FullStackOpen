@@ -52,7 +52,7 @@ export const createAnecdote = (content) => {
 export const updatedAnecdote = (id, content) => {
   return async (dispatch) => {
     const updatedAnecdote = await anecdoteService.update(id, content);
-    dispatch(voteAnecdote(updatedAnecdote));
+    dispatch(voteAnecdote(updatedAnecdote.id));
   };
 };
 
