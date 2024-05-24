@@ -1,0 +1,89 @@
+import { useRef, useState } from "react";
+import blogService from "../services/blogs";
+import Togglable from "./Togglable";
+import { useDispatch } from "react-redux";
+import { setNotificationThunk } from "../reducers/notificationReducer";
+import { createBlog } from "../reducers/blogReducer";
+
+const BlogForm = ({ setBlogs }) => {
+  const [newBlog, setNewBlog] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+  const dispatch = useDispatch();
+  const blogFormRef = useRef();
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+
+    let createdBlog = null;
+
+    if (newBlog.title && newBlog.url) {
+      createdBlog = await dispatch(createBlog(newBlog));
+    }
+
+    dispatch(
+      setNotificationThunk({
+        message: `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
+        success: true,
+      })
+    );
+
+    setNewBlog({ title: "", author: "", url: "" });
+
+    blogFormRef.current.handleToggleVisible();
+  };
+
+  return (
+    <div>
+      <Togglable buttonLabel={`new blog`} ref={blogFormRef}>
+        <h1>create new</h1>
+        <form onSubmit={handleCreate} className={`blog-form-input`}>
+          <label htmlFor="title">title:</label>
+          <input
+            className="title"
+            data-testid="title"
+            type="text"
+            id="title"
+            name="title"
+            value={newBlog.title}
+            onChange={(event) => {
+              setNewBlog({ ...newBlog, title: event.target.value });
+            }}
+          />
+          <br />
+          <label htmlFor="author">author:</label>
+          <input
+            className="author"
+            data-testid="author"
+            type="text"
+            id="author"
+            name="author"
+            value={newBlog.author}
+            onChange={(event) =>
+              setNewBlog({ ...newBlog, author: event.target.value })
+            }
+          />
+          <br />
+          <label htmlFor="url">url:</label>
+          <input
+            className="url"
+            data-testid="url"
+            type="text"
+            id="url"
+            name="url"
+            value={newBlog.url}
+            onChange={(event) =>
+              setNewBlog({ ...newBlog, url: event.target.value })
+            }
+          />
+          <br />
+          <input data-testid="create-button" type="submit" value="create" />
+        </form>
+      </Togglable>
+    </div>
+  );
+};
+
+export default BlogForm;
