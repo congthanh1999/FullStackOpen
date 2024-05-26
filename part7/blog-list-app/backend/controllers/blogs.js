@@ -15,7 +15,6 @@ blogsRouter.get("/:id", async (req, res) => {
   const blog = await Blog.findById(id);
 
   res.json(blog);
-  console.log(blog.toJSON());
 });
 
 blogsRouter.post("/", async (req, res) => {
@@ -40,6 +39,19 @@ blogsRouter.post("/", async (req, res) => {
   } else {
     res.status(400).json({ error: "bad request" });
   }
+});
+
+blogsRouter.post("/:id/comments", async (req, res) => {
+  const blogToComment = await Blog.findById(req.params.id);
+
+  blogToComment.comments.push(req.body.comment);
+  const updatedBlog = await blogToComment.save();
+  const populatedBlog = await Blog.findById(updatedBlog.id).populate("user", {
+    blogs: 0,
+    passwordHash: 0,
+  });
+
+  res.status(200).json(populatedBlog);
 });
 
 blogsRouter.delete("/:id", async (req, res) => {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { object } from "prop-types";
 const baseUrl = "/api/blogs";
 
 let token = null;
@@ -37,6 +38,11 @@ const update = async (id, object) => {
   return res.data;
 };
 
+const comment = async (id, comment) => {
+  const res = await axios.post(`${baseUrl}/${id}/comments`, { comment });
+  return res.data;
+};
+
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
@@ -46,4 +52,4 @@ const remove = async (id) => {
   return res.data;
 };
 
-export default { getAll, create, update, remove, setToken };
+export default { getAll, create, update, remove, setToken, comment };

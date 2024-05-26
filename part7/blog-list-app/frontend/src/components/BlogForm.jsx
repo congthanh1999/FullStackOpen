@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { setNotificationThunk } from "../reducers/notificationReducer";
 import { createBlog } from "../reducers/blogReducer";
 
-const BlogForm = ({ setBlogs }) => {
+const BlogForm = () => {
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
