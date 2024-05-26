@@ -25,7 +25,7 @@ const BlogComment = ({ blog }) => {
   return (
     <>
       <h3>comments</h3>
-      <FormControl style={{ display: "flex", flexDirection: "row" }}>
+      <form style={{ display: "flex", flexDirection: "row" }}>
         <TextareaAutosize
           minRows="3"
           value={comment}
@@ -37,7 +37,10 @@ const BlogComment = ({ blog }) => {
             add comment
           </Button>
         </div>
-      </FormControl>
+        {/* <div>
+          <input type="submit" value="add comment" />
+        </div> */}
+      </form>
       <ul>
         {blog.comments.map((comment, idx) => (
           <li key={idx}>{comment}</li>
@@ -80,7 +83,16 @@ const BlogDetails = ({ blog }) => {
       </h1>
       <a href="">{blog.url}</a>
       <div>
-        likes {likes} <button onClick={handleLikeBlog}>like</button>
+        likes {likes}{" "}
+        <Button
+          variant="contained"
+          onClick={handleLikeBlog}
+          sx={{
+            padding: 0,
+          }}
+        >
+          like
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
       <BlogComment blog={blog} />
