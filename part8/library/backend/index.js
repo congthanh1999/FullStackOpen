@@ -158,7 +158,7 @@ const resolvers = {
           (book) => book.author === author.name
         ).length;
         return {
-          name: author.name,
+          ...author,
           bookCount,
         };
       });
