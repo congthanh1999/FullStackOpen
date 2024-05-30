@@ -26,6 +26,7 @@ const BirthdayForm = (props) => {
           name
           <select
             defaultValue=""
+            id="author"
             onChange={(event) => setAuthor(event.target.value)}
           >
             <option value="" disabled>
@@ -43,7 +44,10 @@ const BirthdayForm = (props) => {
         <input
           type="number"
           id="born"
-          onChange={(event) => setBorn(event.target.value)}
+          value={born}
+          onChange={(event) => {
+            setBorn(event.target.value);
+          }}
         />
         <br />
         <input type="submit" value="update author" />
