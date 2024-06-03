@@ -6,11 +6,6 @@ const { PubSub } = require("graphql-subscriptions");
 const pubsub = new PubSub();
 
 const resolvers = {
-  // Book: {
-  //   author: ({ name, born, id, bookCount }) => {
-  //     return { name, born, id, bookCount };
-  //   },
-  // },
   Query: {
     authorCount: async () => Author.collection.countDocuments(),
     bookCount: async () => Book.collection.countDocuments(),
