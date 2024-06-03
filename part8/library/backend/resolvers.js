@@ -2,8 +2,15 @@ const Author = require("./models/author");
 const Book = require("./models/book");
 const User = require("./models/user");
 const { GraphQLError } = require("graphql");
+const { PubSub } = require("graphql-subscriptions");
+const pubsub = new PubSub();
 
 const resolvers = {
+  // Book: {
+  //   author: ({ name, born, id, bookCount }) => {
+  //     return { name, born, id, bookCount };
+  //   },
+  // },
   Query: {
     authorCount: async () => Author.collection.countDocuments(),
     bookCount: async () => Book.collection.countDocuments(),
@@ -80,6 +87,8 @@ const resolvers = {
 
       const populatedBook = await Book.findById(newBook._id).populate("author");
 
+      pubsub.publish("BOOK_ADDED", { bookAdded: populatedBook });
+
       return populatedBook;
     },
     editAuthor: async (root, args) => {
@@ -153,6 +162,11 @@ const resolvers = {
       const token = jwt.sign(userForToken, process.env.SECRET);
 
       return { value: token };
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator("BOOK_ADDED"),
     },
   },
 };

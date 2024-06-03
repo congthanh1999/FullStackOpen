@@ -5,12 +5,10 @@ import { useState } from "react";
 
 const Books = (props) => {
   const [genre, setGenre] = useState("");
-  const resultByGenre = useQuery(ALL_BOOKS, {
-    variables: { genre },
-  });
+  const resultByGenre = useQuery(ALL_BOOKS, { variables: { genre } });
   const result = useQuery(ALL_BOOKS);
 
-  if (resultByGenre.loading || result.loading) return <div>loading...</div>;
+  if (result.loading || resultByGenre.loading) return <div>loading...</div>;
 
   const booksByGenre = resultByGenre.data.allBooks;
   const books = result.data.allBooks;
@@ -25,6 +23,8 @@ const Books = (props) => {
     return null;
   }
 
+  const booksToRender = genre ? booksByGenre : books;
+
   return (
     <div>
       <h2>books</h2>
@@ -35,7 +35,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksByGenre.map((a) => (
+          {booksToRender.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
