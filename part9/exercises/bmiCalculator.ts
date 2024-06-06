@@ -1,6 +1,6 @@
 type MultiplyValues = {
-  height: Number;
-  weight: Number;
+  height: number;
+  weight: number;
 };
 
 const parseArguments = (args: string[]): MultiplyValues => {
@@ -17,11 +17,8 @@ const parseArguments = (args: string[]): MultiplyValues => {
   }
 };
 
-const { height, weight } = parseArguments(process.argv);
-
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / (height / 100) ** 2;
-  console.log("bmi", bmi);
 
   if (bmi < 18.5) {
     return "underweight";
@@ -34,4 +31,13 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  const { height, weight } = parseArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened";
+  if (error instanceof Error) {
+    errorMessage += "Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
