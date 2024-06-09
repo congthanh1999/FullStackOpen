@@ -48,35 +48,27 @@ const parseDate = (date: unknown): string => {
 
 const parseGender = (gender: unknown): Gender => {
   if (!isString(gender) || !isGender(gender)) {
-    throw new Error("incorrect gender");
+    throw new Error("incorrect gender" + gender);
   }
 
   return gender;
 };
 
 const toNewPatientEntry = (object: unknown): NewPatientEntry => {
-  //   console.log(object);
-  //   const newPatientEntry: NewPatientEntry = {
-  //     name: "thanh",
-  //     occupation: "SE",
-  //     gender: "male",
-  //     ssn: "1234557",
-  //     dateOfBirth: "1999-02-10",
-  //   };
   if (!object || typeof object !== "object") {
-    throw new Error("incorrect or missing object");
+    throw new Error("incorrect or missing data");
   }
 
   if (
     "name" in object &&
-    "dateObBirth" in object &&
+    "dateOfBirth" in object &&
     "ssn" in object &&
     "gender" in object &&
     "occupation" in object
   ) {
     const newPatientEntry: NewPatientEntry = {
       name: parseName(object.name),
-      dateOfBirth: parseDate(object.dateObBirth),
+      dateOfBirth: parseDate(object.dateOfBirth),
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
