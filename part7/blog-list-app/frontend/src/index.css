@@ -23,3 +23,11 @@
   border-radius: 8px;
   width: 100%;
 }
+
+.navbar {
+  display: flex;
+}
+
+.navbar .usename {
+  margin: auto 0;
+}

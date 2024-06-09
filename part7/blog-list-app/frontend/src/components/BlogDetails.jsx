@@ -81,7 +81,7 @@ const BlogDetails = ({ blog }) => {
       <h1>
         {blog.title}&nbsp;{blog.author}
       </h1>
-      <a href="">{blog.url}</a>
+      <a href={`${blog.url}`}>{blog.url}</a>
       <div>
         likes {likes}{" "}
         <Button

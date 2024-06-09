@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../reducers/loginReducer";
+import { Button } from "@mui/material";
 
 const NavBar = ({ user, setErrorMessage }) => {
   const dispatch = useDispatch();
@@ -11,11 +12,20 @@ const NavBar = ({ user, setErrorMessage }) => {
   };
 
   return (
-    <p>
-      <Link to="/blogs">blogs</Link>&nbsp;
-      <Link to="/users">users</Link>&nbsp;
-      {user.name} logged in&nbsp;
-      <button onClick={handleLogout}>log out</button>
+    <p className="navbar">
+      <Link to="/blogs">
+        <Button variant="text">blogs</Button>
+      </Link>
+      &nbsp;
+      <Link to="/users">
+        <Button variant="text">users</Button>
+      </Link>
+      &nbsp;
+      <div className="usename">{user.name} logged in</div>
+      &nbsp;
+      <Button onClick={handleLogout} variant="contained">
+        log out
+      </Button>
     </p>
   );
 };
