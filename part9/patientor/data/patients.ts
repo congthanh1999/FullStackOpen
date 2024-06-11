@@ -9,6 +9,7 @@ const data = [
     ssn: "090786-122X",
     gender: "male",
     occupation: "New york city cop",
+    entries: [],
   },
   {
     id: "d2773598-f723-11e9-8f0b-362b9e155667",
