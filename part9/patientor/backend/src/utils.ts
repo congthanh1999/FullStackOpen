@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from "./types";
+import { Diagnosis, Gender, NewPatientEntry } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -16,7 +16,7 @@ const isGender = (param: string): param is Gender => {
 
 const parseName = (name: unknown): string => {
   if (!isString(name) || !name) {
-    throw new Error("Incorrect for missing name");
+    throw new Error("Incorrect or missing name");
   }
 
   return name;
@@ -24,7 +24,7 @@ const parseName = (name: unknown): string => {
 
 const parseOccupation = (occupation: unknown): string => {
   if (!isString(occupation) || !occupation) {
-    throw new Error("Incorrect for missing occupation");
+    throw new Error("Incorrect or missing occupation");
   }
 
   return occupation;
@@ -32,7 +32,7 @@ const parseOccupation = (occupation: unknown): string => {
 
 const parseSsn = (ssn: unknown): string => {
   if (!isString(ssn) || !ssn) {
-    throw new Error("Incorrect for missing ssn");
+    throw new Error("Incorrect or missing ssn");
   }
 
   return ssn;
@@ -79,6 +79,31 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
   }
 
   throw new Error("Incorrect data: a field missing");
+};
+
+const parseDescription = (desc: unknown): string => {
+  if (!desc || !isString(desc)) {
+    throw new Error("Incorrect or missing description");
+  }
+
+  return desc;
+};
+
+const parseSpecialist = (specialist: unknown): string => {
+  if (!specialist || !isString(specialist)) {
+    throw new Error("Incorrect or missing specialist");
+  }
+
+  return specialist;
+};
+
+const parseDiagnosisCodes = (object: unknown): Array<Diagnosis["code"]> => {
+  if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
+    // we will just trust the data to be in correct form
+    return [] as Array<Diagnosis["code"]>;
+  }
+
+  return object.diagnosisCodes as Array<Diagnosis["code"]>;
 };
 
 export default toNewPatientEntry;
