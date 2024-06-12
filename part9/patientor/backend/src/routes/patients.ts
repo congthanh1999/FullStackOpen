@@ -27,16 +27,6 @@ patientsRouter.post("/", (req, res) => {
     }
     res.status(400).send(errorMessage);
   }
-  //   const { name, occupation, gender, ssn, dateOfBirth } = req.body;
-  //   const newPatientEntry = patientsService.addPatient({
-  //     name,
-  //     occupation,
-  //     gender,
-  //     ssn,
-  //     dateOfBirth,
-  //   });
-
-  //   res.json(newPatientEntry);
 });
 
 export default patientsRouter;
