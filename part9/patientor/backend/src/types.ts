@@ -30,6 +30,11 @@ export interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: HealthCheckRating;
 }
 
+export interface SickLeave {
+  startDate: BaseEntry["date"];
+  endDate: string;
+}
+
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
@@ -74,3 +79,5 @@ type UnionOmit<T, K extends string | number | symbol> = T extends unknown
   : never;
 // Define Entry without the 'id' property
 export type EntryWithoutId = UnionOmit<Entry, "id">;
+
+export type BaseEntryWithoutId = Omit<BaseEntry, "id">;

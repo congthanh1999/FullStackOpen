@@ -2,6 +2,7 @@ import { Patient, Diagnosis } from "../../types";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import EntryList from "./EntryList";
+import Entryform from "./Entryform";
 
 interface Props {
   patient?: Patient | null;
@@ -13,6 +14,7 @@ const PatientDetails = (props: Props) => {
 
   return (
     <div>
+      <Entryform patient={props.patient} diagnoses={props.diagnoses} />
       <div>
         <h2>
           {props.patient.name}{" "}
