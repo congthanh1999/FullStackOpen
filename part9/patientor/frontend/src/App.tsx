@@ -60,7 +60,12 @@ const App = () => {
           <Route
             path="/patients/:id"
             element={
-              <PatientDetails patient={matchedPatient} diagnoses={diagnoses} />
+              matchedPatient && (
+                <PatientDetails
+                  patient={matchedPatient}
+                  diagnoses={diagnoses}
+                />
+              )
             }
           />
         </Routes>

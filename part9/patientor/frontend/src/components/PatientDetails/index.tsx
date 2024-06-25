@@ -3,18 +3,28 @@ import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import EntryList from "./EntryList";
 import Entryform from "./Entryform";
+import { Entry } from "../../types";
+import { useState } from "react";
 
 interface Props {
-  patient?: Patient | null;
+  patient: Patient;
   diagnoses: Diagnosis[];
 }
 
 const PatientDetails = (props: Props) => {
+  const [patientEntry, setPatientEntries] = useState<Entry[]>(
+    props.patient.entries
+  );
+
   if (!props.patient) return <div>patient not found</div>;
 
   return (
     <div>
-      <Entryform patient={props.patient} diagnoses={props.diagnoses} />
+      <Entryform
+        patient={props.patient}
+        diagnoses={props.diagnoses}
+        setPatientEntries={setPatientEntries}
+      />
       <div>
         <h2>
           {props.patient.name}{" "}
@@ -29,7 +39,7 @@ const PatientDetails = (props: Props) => {
       </div>
       <div>
         <h3>entries</h3>
-        <EntryList entries={props.patient.entries} />
+        <EntryList entries={patientEntry} />
       </div>
     </div>
   );
