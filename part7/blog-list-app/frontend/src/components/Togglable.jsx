@@ -1,6 +1,19 @@
 import { forwardRef, useState, useImperativeHandle } from "react";
 import PropTypes from "prop-types";
-import { Button } from "@mui/material";
+import { Button, styled } from "@mui/material";
+
+const Buttons = styled(`div`)({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+  width: 72,
+});
+
+const StyledForm = styled(`div`)({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+});
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
@@ -26,10 +39,21 @@ const Togglable = forwardRef((props, refs) => {
           {props.buttonLabel}
         </Button>
       </div>
-      <div style={visibleOnStyle}>
+      <StyledForm style={visibleOnStyle}>
         {props.children}
-        <button onClick={handleToggleVisible}>cancel</button>
-      </div>
+        <Buttons>
+          <Button
+            data-testid="create-button"
+            variant="contained"
+            onClick={props.onClick}
+          >
+            create
+          </Button>
+          <Button onClick={handleToggleVisible} variant="contained">
+            cancel
+          </Button>
+        </Buttons>
+      </StyledForm>
     </div>
   );
 });

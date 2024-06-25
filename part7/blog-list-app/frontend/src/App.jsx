@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBlogs } from "./reducers/blogReducer";
-import { setUser, logout } from "./reducers/loginReducer";
+import { setUser } from "./reducers/loginReducer";
 import { Routes, Route, useMatch } from "react-router-dom";
 import Users from "./components/Users";
 import UserDetails from "./components/UserDetails";
 import { fetchUsers } from "./reducers/userReducer";
 import BlogDetails from "./components/BlogDetails";
 import NavBar from "./components/NavBar";
+import BlogList from "./components/BlogList";
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -55,17 +55,16 @@ const App = () => {
       ) : (
         <>
           <NavBar user={user} setErrorMessage={setErrorMessage} />
-          <h2>blogs</h2>
+
           <Notification />
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  {" "}
+                  <h1>Blogs</h1>
                   <BlogForm />
-                  {blogs &&
-                    blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+                  <BlogList blogs={blogs} />
                 </>
               }
             />
@@ -73,10 +72,9 @@ const App = () => {
               path="/blogs"
               element={
                 <>
-                  {" "}
+                  <h1>Blogs</h1>
                   <BlogForm />
-                  {blogs &&
-                    blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+                  <BlogList blogs={blogs} />
                 </>
               }
             />

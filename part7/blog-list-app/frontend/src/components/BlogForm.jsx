@@ -1,9 +1,23 @@
 import { useRef, useState } from "react";
-import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 import { useDispatch } from "react-redux";
 import { setNotificationThunk } from "../reducers/notificationReducer";
 import { createBlog } from "../reducers/blogReducer";
+import { styled, TextField } from "@mui/material";
+
+const FormContainer = styled(`div`)({
+  marginBottom: "1rem",
+});
+
+const StyledForm = styled(`form`)({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+});
+
+const StyledTextField = styled(TextField)({
+  width: "33%",
+});
 
 const BlogForm = () => {
   const [newBlog, setNewBlog] = useState({
@@ -36,12 +50,16 @@ const BlogForm = () => {
   };
 
   return (
-    <div>
-      <Togglable buttonLabel={`new blog`} ref={blogFormRef}>
+    <FormContainer>
+      <Togglable
+        buttonLabel={`new blog`}
+        ref={blogFormRef}
+        onClick={handleCreate}
+      >
         <h1>create new</h1>
-        <form onSubmit={handleCreate} className={`blog-form-input`}>
-          <label htmlFor="title">title:</label>
-          <input
+        <StyledForm className={`blog-form-input`}>
+          <StyledTextField
+            label="title"
             className="title"
             data-testid="title"
             type="text"
@@ -52,9 +70,8 @@ const BlogForm = () => {
               setNewBlog({ ...newBlog, title: event.target.value });
             }}
           />
-          <br />
-          <label htmlFor="author">author:</label>
-          <input
+          <StyledTextField
+            label="author"
             className="author"
             data-testid="author"
             type="text"
@@ -65,9 +82,8 @@ const BlogForm = () => {
               setNewBlog({ ...newBlog, author: event.target.value })
             }
           />
-          <br />
-          <label htmlFor="url">url:</label>
-          <input
+          <StyledTextField
+            label="url"
             className="url"
             data-testid="url"
             type="text"
@@ -78,11 +94,9 @@ const BlogForm = () => {
               setNewBlog({ ...newBlog, url: event.target.value })
             }
           />
-          <br />
-          <input data-testid="create-button" type="submit" value="create" />
-        </form>
+        </StyledForm>
       </Togglable>
-    </div>
+    </FormContainer>
   );
 };
 
