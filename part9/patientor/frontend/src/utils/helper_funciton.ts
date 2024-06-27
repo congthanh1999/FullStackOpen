@@ -6,3 +6,9 @@ export const getYearMonthDate = (date: Date): string => {
     : "";
   return yearMonthDate;
 };
+
+export const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};

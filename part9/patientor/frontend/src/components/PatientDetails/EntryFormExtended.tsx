@@ -1,52 +1,17 @@
-import { MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
-import {
-  Calendar,
-  DateRangePicker,
-  Range,
-  RangeKeyDict,
-} from "react-date-range";
-import { HealthCheckRating, HospitalEntry } from "../../types";
-import { getYearMonthDate } from "../../utils/helper_funciton";
+import { MenuItem, Select, TextField } from "@mui/material";
+import { Calendar, DateRangePicker } from "react-date-range";
+import { HealthCheckRating } from "../../types";
 
-interface ExtendedEntryFormProps {
-  type: "HealthCheck" | "OccupationalHealthcare" | "Hospital";
-  healthCheckRating: number;
-  setHealthCheckRating: React.Dispatch<React.SetStateAction<number>>;
-  employerName: string;
-  setEmployerName: React.Dispatch<React.SetStateAction<string>>;
-  dateRange: Range;
-  setDateRange: React.Dispatch<React.SetStateAction<Range>>;
-  discharge: HospitalEntry["discharge"];
-  setDischarge: React.Dispatch<
-    React.SetStateAction<HospitalEntry["discharge"]>
-  >;
-}
-
-const EntryFormExtended = (props: ExtendedEntryFormProps) => {
-  const selectionRange = {
-    startDate: props.dateRange.startDate,
-    endDate: props.dateRange.endDate,
-    key: "selection",
-  };
-
-  const handleSelectRating = (event: SelectChangeEvent<number>) => {
-    props.setHealthCheckRating(Number(event.target.value));
-  };
-
-  const handleSelectDateRange = (ranges: RangeKeyDict) => {
-    props.setDateRange({
-      startDate: ranges.selection.startDate,
-      endDate: ranges.selection.endDate,
-      key: "selection",
-    });
-  };
-
+const EntryFormExtended = (props) => {
   let content;
 
-  switch (props.type) {
+  switch (props.entryFormFields.entryType) {
     case "HealthCheck":
       content = (
-        <Select value={props.healthCheckRating} onChange={handleSelectRating}>
+        <Select
+          value={props.entryFormFields.healthCheckRating}
+          onChange={props.entryFormFields.onHealthCheckRaingChange}
+        >
           {Object.entries(HealthCheckRating)
             .filter(([key, value]) => typeof value === "number")
             .map(([key, value]) => (
@@ -61,14 +26,14 @@ const EntryFormExtended = (props: ExtendedEntryFormProps) => {
       content = (
         <>
           <TextField
-            value={props.employerName}
+            value={props.entryFormFields.employerName}
             label="Employer name"
             fullWidth
-            onChange={(event) => props.setEmployerName(event.target.value)}
+            onChange={props.entryFormFields.onEmployerNameChange}
           ></TextField>
           <DateRangePicker
-            ranges={[selectionRange]}
-            onChange={handleSelectDateRange}
+            ranges={[props.entryFormFields.dateRange]}
+            onChange={props.entryFormFields.handleSelectDateRange}
           />
         </>
       );
@@ -77,31 +42,22 @@ const EntryFormExtended = (props: ExtendedEntryFormProps) => {
       content = (
         <>
           <Calendar
-            date={new Date(props.discharge.date)}
-            onChange={(date: Date) => {
-              props.setDischarge((prev) => {
-                return {
-                  ...prev,
-                  date: getYearMonthDate(date),
-                };
-              });
-            }}
+            date={new Date(props.entryFormFields.discharge.date)}
+            onChange={(date: Date) =>
+              props.entryFormFields.onDiagnosisCodesChange(date)
+            }
           />
           <TextField
-            value={props.discharge.criteria}
+            value={props.entryFormFields.discharge.criteria}
             label="Criteria"
             fullWidth
-            onChange={(event) => {
-              props.setDischarge((prev) => {
-                return {
-                  ...prev,
-                  criteria: event.target.value,
-                };
-              });
-            }}
+            onChange={props.entryFormFields.onDischargeCriteriaChange}
           />
         </>
       );
+      break;
+    default:
+      break;
   }
 
   return content;

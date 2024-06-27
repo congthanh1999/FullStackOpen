@@ -1,28 +1,20 @@
 import {
-  Button,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField,
   InputLabel,
-  Input,
   FormControl,
 } from "@mui/material";
-import { SyntheticEvent, useState } from "react";
-import { Calendar, Range } from "react-date-range";
+import { useRef } from "react";
+import { Calendar } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 
-import patientEntriesService from "../../services/patientEntries";
-import {
-  Diagnosis,
-  Entry,
-  HealthCheckRating,
-  HospitalEntry,
-  Patient,
-} from "../../types";
+import { Diagnosis, Entry, Patient } from "../../types";
 import { getYearMonthDate } from "../../utils/helper_funciton";
 
+import Togglable, { TogglableHandle } from "../Togglable";
+import useEntryFormField from "../../hooks/useEntryFormField";
 import EntryFormExtended from "./EntryFormExtended";
 
 interface Props {
@@ -31,76 +23,33 @@ interface Props {
   setPatientEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
 }
 
-const Entryform = (props: Props) => {
-  const [entryType, setEntryType] = useState<Entry["type"]>("HealthCheck");
-  const [description, setDescription] = useState<string>("");
-  const [date, setDate] = useState<Date>(new Date());
-  const [specialist, setSpecialist] = useState<string>("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
-  const [healthCheckRating, setHealthCheckRating] = useState<number>(
-    HealthCheckRating.Healthy
-  );
-  const [employerName, setEmployerName] = useState<string>("");
-  const [dateRange, setDateRange] = useState<Range>({
-    startDate: date,
-    endDate: new Date(date.getTime() + 24 * 60 * 60 * 1000),
-    key: "selection",
-  });
-  const [discharge, setDischarge] = useState<HospitalEntry["discharge"]>({
-    date: getYearMonthDate(date),
-    criteria: "123",
-  });
-
-  const handleAddEntry = async (event: SyntheticEvent) => {
-    event.preventDefault();
-
-    const savedEntry = await patientEntriesService.create(props.patient.id, {
-      description,
-      date: getYearMonthDate(date),
-      specialist,
-      diagnosisCodes,
-      // healthCheckRating,
-      // employerName,
-      // sickLeave: {
-      //   startDate: dateRange.startDate,
-      //   endDate: dateRange.endDate,
-      // },
-      discharge: {},
-    });
-
-    props.setPatientEntries((prev) => [...prev, savedEntry]);
-
-    setDescription("");
-    setDate(new Date());
-    setSpecialist("");
-  };
-
-  const handleDiagnosisCodeChange = (
-    event: SelectChangeEvent<string[]>
-  ): void => {
-    let codes: string[] = [...diagnosisCodes];
-    codes = codes.concat(event.target.value);
-    setDiagnosisCodes(codes);
-  };
-
-  const handleSelectDate = (date: Date) => {
-    setDate(date);
-  };
+const EntryForm = (props: Props) => {
+  const entryFormFields = useEntryFormField();
+  const togglableButtonRef = useRef<TogglableHandle>(null);
 
   return (
-    <div>
+    <Togglable
+      label="Create entry"
+      ref={togglableButtonRef}
+      handleAddEntry={(event) =>
+        entryFormFields.handleAddEntry(
+          event,
+          props.patient.id,
+          props.setPatientEntries,
+          togglableButtonRef
+        )
+      }
+    >
       <div>
         <FormControl>
           <InputLabel id="entry">Entry types</InputLabel>
           <Select
             labelId="entry"
             label="entry"
-            value={entryType}
+            value={entryFormFields.entryType}
             id="entry"
             fullWidth
-            onChange={(event: SelectChangeEvent) =>
-              setEntryType(event.target.value as Entry["type"])
-            }
+            onChange={entryFormFields.onEntryTypeChange}
           >
             <MenuItem value={"HealthCheck"}>HealthCheck</MenuItem>
             <MenuItem value={"OccupationalHealthcare"}>
@@ -109,59 +58,60 @@ const Entryform = (props: Props) => {
             <MenuItem value={"Hospital"}>Hospital</MenuItem>
           </Select>
         </FormControl>
-      </div>
-      <form onSubmit={handleAddEntry}>
-        <TextField
-          label="description"
-          fullWidth
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
-        <TextField label="date" fullWidth value={getYearMonthDate(date)} />
-        <Calendar date={date} onChange={handleSelectDate} />
-        <TextField
-          label="specialist"
-          fullWidth
-          value={specialist}
-          onChange={(event) => setSpecialist(event.target.value)}
-        />
-        <Select
-          label="diagnosis codes"
-          fullWidth
-          onChange={handleDiagnosisCodeChange}
-          value={diagnosisCodes.length ? diagnosisCodes : ""}
-          renderValue={(diagnosisCodes: string[]) =>
-            diagnosisCodes.length ? (
-              diagnosisCodes.join(", ")
-            ) : (
-              <em>nothing selected</em>
+
+        <form
+          onSubmit={(event) =>
+            entryFormFields.handleAddEntry(
+              event,
+              props.patient.id,
+              props.setPatientEntries,
+              togglableButtonRef
             )
           }
         >
-          {props.diagnoses.map((d) => (
-            <MenuItem key={d.code} value={d.code}>
-              {d.code}: {d.name}
-            </MenuItem>
-          ))}
-        </Select>
-        <EntryFormExtended
-          type={entryType}
-          healthCheckRating={healthCheckRating}
-          setHealthCheckRating={setHealthCheckRating}
-          employerName={employerName}
-          setEmployerName={setEmployerName}
-          dateRange={dateRange}
-          setDateRange={setDateRange}
-          discharge={discharge}
-          setDischarge={setDischarge}
-        />
-        <br />
-        <Button type="submit" variant="contained">
-          Add
-        </Button>
-      </form>
-    </div>
+          <TextField
+            label="description"
+            fullWidth
+            value={entryFormFields.description}
+            onChange={entryFormFields.onDescriptionChange}
+          />
+          <TextField
+            label="date"
+            fullWidth
+            value={getYearMonthDate(entryFormFields.date)}
+          />
+          <Calendar
+            date={entryFormFields.date}
+            onChange={entryFormFields.onDateChange}
+          />
+          <TextField
+            label="specialist"
+            fullWidth
+            value={entryFormFields.specialist}
+            onChange={entryFormFields.onSpecialistChange}
+          />
+          <FormControl fullWidth>
+            <InputLabel id="diagnosis-codes">Diagnosis codes</InputLabel>
+            <Select
+              labelId="diagnosis-code"
+              label="diagnosis codes"
+              onChange={entryFormFields.onDiagnosisCodesChange}
+              value={entryFormFields.diagnosisCodes}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {props.diagnoses.map((d) => (
+                <MenuItem key={d.code} value={d.code}>
+                  {d.code}: {d.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <EntryFormExtended entryFormFields={entryFormFields} />
+        </form>
+      </div>
+    </Togglable>
   );
 };
 
-export default Entryform;
+export default EntryForm;

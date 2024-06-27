@@ -2,7 +2,7 @@ import { Patient, Diagnosis } from "../../types";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import EntryList from "./EntryList";
-import Entryform from "./Entryform";
+import EntryForm from "./EntryForm";
 import { Entry } from "../../types";
 import { useState } from "react";
 
@@ -20,7 +20,7 @@ const PatientDetails = (props: Props) => {
 
   return (
     <div>
-      <Entryform
+      <EntryForm
         patient={props.patient}
         diagnoses={props.diagnoses}
         setPatientEntries={setPatientEntries}
